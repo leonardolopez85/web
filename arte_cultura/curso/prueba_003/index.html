@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exposición Grupal - Nivel WOWk</title>
+    
+    <!-- Tailwind CSS para el layout base -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome para íconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts: Inter para modernidad y Playfair para elegancia -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base y tipografía */
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #050505; /* Fallback */
+            background-image: 
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8)), 
+                url('Chimborazo.jpg'); /* Tu imagen original */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Canvas de partículas detrás de todo */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Contenedor con perspectiva 3D para la magia */
+        .perspective-container {
+            perspective: 1000px;
+        }
+
+        /* Diseño Glassmorphism Ultra Premium */
+        .glass-3d-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            /* Transform-style permite que los elementos hijos floten en 3D */
+            transform-style: preserve-3d;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efecto de borde neón (Colores de la bandera/cálidos) al hacer hover */
+        .glass-3d-card:hover {
+            border: 1px solid rgba(255, 215, 0, 0.5); /* Borde dorado */
+            box-shadow: 0 0 30px rgba(255, 165, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            z-index: 10;
+        }
+
+        /* El destello de luz que sigue al mouse (Glare) */
+        .glare {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent 60%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            transform: translateZ(1px); /* Justo encima del cristal */
+        }
+        
+        .glass-3d-card:hover .glare {
+            opacity: 1;
+        }
+
+        /* Hacer que el contenido flote HASTA AFUERA de la tarjeta en 3D */
+        .content-3d {
+            transform: translateZ(60px); /* 60px hacia el usuario */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 2rem;
+            text-align: center;
+            /* Evita que el texto intercepte los eventos del mouse mal */
+            pointer-events: none; 
+        }
+
+        /* Íconos con resplandor */
+        .icon-wrapper {
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.6));
+            transform: translateZ(80px); /* Aún más afuera */
+        }
+
+        /* Animaciones */
+        @keyframes titleReveal {
+            0% { opacity: 0; transform: translateY(-50px) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        .animate-title {
+            animation: titleReveal 1.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardPopIn {
+            0% { opacity: 0; transform: translateY(100px) scale(0.8) rotateX(-20deg); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0); }
+        }
+
+        .animate-card {
+            opacity: 0; /* Empiezan invisibles */
+            animation: cardPopIn 1s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
+        /* Texto brillante */
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-16 px-4 relative">
+
+    <!-- Canvas de fondo para partículas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Encabezado majestuoso -->
+    <header class="text-center mb-16 animate-title w-full max-w-4xl relative z-10">
+        <h1 class="text-6xl md:text-7xl font-bold text-white mb-4 text-glow tracking-wide">
+            Exposición Grupal
+        </h1>
+        <p class="text-xl md:text-2xl font-light text-gray-300 italic opacity-90 text-glow">
+            "Ecuador: diversidad cultural, artística e identidad nacional"
+        </p>
+        <div class="w-32 h-1 mx-auto mt-8 rounded-full bg-gradient-to-r from-transparent via-[#FFD700] to-transparent opacity-70"></div>
+    </header>
+
+    <!-- Grid de Tarjetas WOW -->
+    <!-- Note: Los enlaces 'a' envuelven todo para que funcione al hacer click -->
+    <main class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 perspective-container relative z-10">
+
+        <!-- Tarjeta 1 -->
+        <a href="https://www.youtube.com/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.1s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-leaf"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 1</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">Ecuador: un país megadiverso</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta 2 -->
+        <a href="https://www.extra.ec/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.2s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-masks-theater"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 2</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">La identidad cultural del Ecuador</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta 3 -->
+        <a href="./POO/APE/P1/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.3s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-people-group"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 3</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">Pueblos y nacionalidades indígenas</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta 4 -->
+        <a href="./MD/S7-P1/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.4s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-comments"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 4</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">Lenguas ancestrales del Ecuador</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta 5 -->
+        <a href="./POO/APE/P1/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.5s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-palette"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 5</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">Arte de los pueblos originarios</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta 6 -->
+        <a href="./MD/S7-P1/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.6s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-church"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 6</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">Arquitectura y patrimonio cultural</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta 7 -->
+        <a href="./POO/APE/P1/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.7s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-book-open"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 7</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">Literatura y arte ecuatoriano</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta 8 -->
+        <a href="https://www.eluniverso.com/" class="glass-3d-card h-64 animate-card block cursor-pointer" style="animation-delay: 0.8s;">
+            <div class="glare"></div>
+            <div class="content-3d">
+                <div class="icon-wrapper text-5xl mb-4"><i class="fa-solid fa-microchip"></i></div>
+                <h2 class="text-sm font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 8</h2>
+                <p class="text-xl font-semibold text-white drop-shadow-md">Tecnología al servicio de la cultura</p>
+            </div>
+        </a>
+
+    </main>
+
+    <script>
+        /* =========================================
+           1. LÓGICA DEL EFECTO 3D TILT (Parallax)
+           ========================================= */
+        const cards = document.querySelectorAll('.glass-3d-card');
+
+        cards.forEach(card => {
+            const glare = card.querySelector('.glare');
+
+            card.addEventListener('mousemove', (e) => {
+                // Obtener posición y dimensiones de la tarjeta
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; // x position within the element.
+                const y = e.clientY - rect.top;  // y position within the element.
+                
+                // Calcular el centro de la tarjeta
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calcular la rotación en base a qué tan lejos está el mouse del centro
+                // Máximo giro de 15 grados para que sea elegante
+                const rotateX = ((y - centerY) / centerY) * -15; 
+                const rotateY = ((x - centerX) / centerX) * 15;
+
+                // Aplicar la transformación 3D (tilt)
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                
+                // Mover el destello (glare) para que siga al mouse
+                if (glare) {
+                    const glareX = (x / rect.width) * 100;
+                    const glareY = (y / rect.height) * 100;
+                    glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.25), transparent 50%)`;
+                }
+            });
+
+            // Cuando el mouse sale, la tarjeta vuelve suavemente a la normalidad
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                card.style.transition = `transform 0.5s ease-out`;
+                if (glare) glare.style.background = `radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent 60%)`;
+            });
+
+            // Remover la transición al entrar para que el seguimiento sea instantáneo
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = `none`;
+            });
+        });
+
+        /* =========================================
+           2. LÓGICA DEL CANVAS DE PARTÍCULAS (Magia)
+           ========================================= */
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const particleCount = 70; // Cantidad de chispas flotantes
+
+        // Ajustar el canvas al tamaño de la pantalla
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Clase Partícula
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5; // Tamaño pequeño
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * -1 - 0.5; // Siempre suben flotando
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                // Si la partícula sale por arriba, reaparece abajo
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 215, 0, ${this.opacity})`; // Color dorado
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Crear las partículas
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        // Animación infinita del Canvas
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
+</body>
+</html>

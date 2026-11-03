@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Meta viewport crucial para que se adapte a celulares -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feria Cultural del Ecuador</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome para íconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            /* Evitamos scroll horizontal en celulares */
+            overflow-x: hidden; 
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* 
+           SOLUCIÓN ANTI-LAG PARA CELULARES:
+           En lugar de poner el fondo en el body, usamos un div fijo.
+           Esto evita que los celulares (especialmente iPhone) se traben al hacer scroll.
+        */
+        .fondo-fijo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8)), 
+                url('Chimborazo.jpg'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        /* Efecto Cristal (Glassmorphism) amigable con móviles */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); /* Soporte Safari/iOS */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            text-decoration: none;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        /* Efecto al tocar en celular o pasar mouse en PC */
+        .glass-card:hover, .glass-card:active {
+            transform: translateY(-5px);
+            border-color: rgba(255, 165, 0, 0.6); /* Borde naranja */
+            box-shadow: 0 10px 30px rgba(255, 165, 0, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .text-glow {
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .icon-gradient {
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4 md:py-16 relative">
+
+    <!-- Capa de fondo fijo (Anti-lag) -->
+    <div class="fondo-fijo"></div>
+
+    <!-- Encabezado -->
+    <header class="text-center mb-12 w-full max-w-4xl relative z-10 px-2">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 text-glow tracking-wide">
+            Feria Cultural del Ecuador
+        </h1>
+        <p class="text-lg md:text-2xl font-light text-gray-200 italic opacity-90 text-glow">
+            "Ecuador: diversidad cultural, artística e identidad nacional"
+        </p>
+        <div class="w-24 h-1 mx-auto mt-6 rounded-full bg-gradient-to-r from-transparent via-orange-400 to-transparent opacity-70"></div>
+    </header>
+
+    <!-- Grid Adaptativo: 1 columna en móvil, 2 en tablet, 3 en PC -->
+    <main class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+
+        <!-- Tarjeta 1 -->
+        <a href="https://www.youtube.com/" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-leaf"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 1</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 1: Ecuador megadiverso</p>
+        </a>
+
+        <!-- Tarjeta 2 -->
+        <a href="https://www.extra.ec/" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-masks-theater"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 2</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 2: Identidad cultural</p>
+        </a>
+
+        <!-- Tarjeta 3 -->
+        <a href="./POO/APE/P1/" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-people-group"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 3</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 3: Pueblos y nacionalidades</p>
+        </a>
+
+        <!-- Tarjeta 4 -->
+        <a href="./MD/S7-P1/" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-comments"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 4</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 4: Lenguas ancestrales</p>
+        </a>
+
+        <!-- Tarjeta 5 (TU GRUPO - TEMA 7) -->
+        <!-- Nota: Cambia el href al enlace donde guardarás tu museo virtual -->
+        <a href="#" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full border-orange-500/30 shadow-[0_0_15px_rgba(255,165,0,0.1)]">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-book-open"></i></div>
+            <h2 class="text-xs font-bold text-orange-400 tracking-[0.2em] uppercase mb-2">Grupo 5</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 7: Literatura y arte ecuatoriano</p>
+        </a>
+
+        <!-- Tarjeta 6 -->
+        <a href="./MD/S7-P1/" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-church"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 6</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 6: Arquitectura y patrimonio</p>
+        </a>
+
+        <!-- Tarjeta 7 -->
+        <a href="./POO/APE/P1/" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-palette"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 7</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 5: Arte originario</p>
+        </a>
+
+        <!-- Tarjeta 8 -->
+        <a href="https://www.eluniverso.com/" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-microchip"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 8</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 8: Tecnología cultural</p>
+        </a>
+
+        <!-- Tarjeta 9 -->
+        <a href="#" class="glass-card flex flex-col items-center justify-center p-8 text-center h-full">
+            <div class="text-4xl mb-3 icon-gradient"><i class="fa-solid fa-star"></i></div>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-2">Grupo 9</h2>
+            <p class="text-lg font-semibold text-white drop-shadow-md">Tema 9: [Por definir]</p>
+        </a>
+
+    </main>
+
+</body>
+</html>

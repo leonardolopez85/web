@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exposición Grupal - Nivel Universoo</title>
+    
+    <!-- Tailwind CSS para diseño responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome para íconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts: Inter y Montserrat para un toque espacial -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@200;500;800&display=swap" rel="stylesheet">
+
+    <!-- Three.js para el motor 3D del universo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Tone.js para la síntesis de audio y efectos de sonido -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        /* Ocultar el cursor original del sistema */
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #030305;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            cursor: none; 
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Lienzo 3D en el fondo absoluto */
+        #webgl-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+        }
+
+        /* Fusión de tu imagen del Chimborazo con el universo 3D */
+        #bg-chimborazo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('Chimborazo.jpg');
+            background-size: cover;
+            background-position: center;
+            /* Estos filtros oscurecen la montaña y la fusionan con las estrellas 3D */
+            opacity: 0.25;
+            mix-blend-mode: screen; 
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Velo oscuro para asegurar lectura perfecta */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 40%, #030305 150%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Cursor Personalizado - Punto central */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: #00f3ff;
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            pointer-events: none;
+            box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff;
+        }
+
+        /* Cursor Personalizado - Anillo exterior animado */
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            z-index: 9998;
+            pointer-events: none;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        /* Pantalla de Inicio (Para autorizar Audio) */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 3, 5, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .btn-start {
+            background: transparent;
+            color: #00f3ff;
+            border: 1px solid #00f3ff;
+            padding: 15px 40px;
+            font-size: 18px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-radius: 30px;
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        .btn-start:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* Contenedor principal invisible al inicio */
+        #main-content {
+            opacity: 0;
+            transition: opacity 2s ease;
+            visibility: hidden;
+        }
+
+        /* Glassmorphism Extremo para las Tarjetas */
+        .holo-card {
+            background: rgba(15, 20, 30, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(0, 243, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 165, 0, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            cursor: none;
+        }
+
+        .holo-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+            z-index: -1;
+            border-radius: 18px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .holo-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            box-shadow: 0 15px 40px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(255, 165, 0, 0.1);
+        }
+
+        .holo-card:hover::before {
+            opacity: 1;
+        }
+
+        .holo-card:hover .icon-3d {
+            transform: translateZ(50px) scale(1.2);
+            color: #00f3ff;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.8);
+        }
+
+        /* Elementos que flotan fuera del cristal */
+        .content-3d {
+            transform: translateZ(30px);
+            pointer-events: none;
+        }
+
+        .icon-3d {
+            font-size: 2.5rem;
+            color: #FFA500;
+            margin-bottom: 15px;
+            transition: all 0.4s ease;
+            display: block;
+        }
+
+        /* Resplandor del título */
+        .title-glow {
+            background: linear-gradient(to right, #00f3ff, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.4));
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cursores Personalizados -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <!-- Fondos -->
+    <div id="webgl-container"></div>
+    <div id="bg-chimborazo"></div>
+    <div class="vignette"></div>
+
+    <!-- Pantalla de Inicio (Requerida por los navegadores para poder reproducir sonido) -->
+    <div id="intro-screen">
+        <i class="fa-solid fa-satellite-dish text-6xl text-[#00f3ff] mb-6 animate-pulse"></i>
+        <h2 class="text-3xl font-light tracking-widest text-white mb-8 text-center">PORTAL ACADÉMICO</h2>
+        <button id="start-btn" class="btn-start">
+            Iniciar Experiencia 3D
+        </button>
+        <p class="text-gray-500 mt-6 text-sm italic">* Se recomienda usar auriculares *</p>
+    </div>
+
+    <!-- Contenedor Principal -->
+    <main id="main-content" class="min-h-screen flex flex-col items-center py-20 px-4 relative z-10 w-full max-w-7xl mx-auto">
+        
+        <header class="text-center mb-16 w-full">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 title-glow uppercase tracking-tight">
+                Exposición Grupal
+            </h1>
+            <p class="text-xl md:text-2xl font-light text-gray-300 tracking-wide mt-4">
+                "Ecuador: diversidad cultural, artística e identidad nacional"
+            </p>
+            <div class="w-24 h-1 mx-auto mt-6 bg-gradient-to-r from-[#00f3ff] to-[#FFA500] rounded-full"></div>
+        </header>
+
+        <!-- Grid de 8 Grupos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full perspective-1000">
+            
+            <a href="https://www.youtube.com/" class="holo-card group" data-note="0">
+                <div class="content-3d">
+                    <i class="fa-solid fa-leaf icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 1</h2>
+                    <p class="text-lg font-semibold text-white group-hover:text-white transition-colors">Ecuador: un país megadiverso</p>
+                </div>
+            </a>
+
+            <a href="https://www.extra.ec/" class="holo-card group" data-note="1">
+                <div class="content-3d">
+                    <i class="fa-solid fa-masks-theater icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 2</h2>
+                    <p class="text-lg font-semibold text-white">La identidad cultural del Ecuador</p>
+                </div>
+            </a>
+
+            <a href="./POO/APE/P1/" class="holo-card group" data-note="2">
+                <div class="content-3d">
+                    <i class="fa-solid fa-people-group icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 3</h2>
+                    <p class="text-lg font-semibold text-white">Pueblos y nacionalidades indígenas</p>
+                </div>
+            </a>
+
+            <a href="./MD/S7-P1/" class="holo-card group" data-note="3">
+                <div class="content-3d">
+                    <i class="fa-solid fa-comments icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 4</h2>
+                    <p class="text-lg font-semibold text-white">Lenguas ancestrales del Ecuador</p>
+                </div>
+            </a>
+
+            <a href="./POO/APE/P1/" class="holo-card group" data-note="4">
+                <div class="content-3d">
+                    <i class="fa-solid fa-palette icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 5</h2>
+                    <p class="text-lg font-semibold text-white">Arte de los pueblos originarios</p>
+                </div>
+            </a>
+
+            <a href="./MD/S7-P1/" class="holo-card group" data-note="5">
+                <div class="content-3d">
+                    <i class="fa-solid fa-landmark-dome icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 6</h2>
+                    <p class="text-lg font-semibold text-white">Arquitectura y patrimonio cultural</p>
+                </div>
+            </a>
+
+            <a href="./POO/APE/P1/" class="holo-card group" data-note="6">
+                <div class="content-3d">
+                    <i class="fa-solid fa-book-open icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 7</h2>
+                    <p class="text-lg font-semibold text-white">Literatura y arte ecuatoriano</p>
+                </div>
+            </a>
+
+            <a href="https://www.eluniverso.com/" class="holo-card group" data-note="7">
+                <div class="content-3d">
+                    <i class="fa-solid fa-microchip icon-3d"></i>
+                    <h2 class="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase mb-3">Grupo 8</h2>
+                    <p class="text-lg font-semibold text-white">Tecnología al servicio de la cultura</p>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <script>
+        // ==========================================
+        // 1. LÓGICA DEL CURSOR PERSONALIZADO
+        // ==========================================
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let outlineX = window.innerWidth / 2;
+        let outlineY = window.innerHeight / 2;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // El punto central sigue exactamente al mouse
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+        });
+
+        // Bucle para dar un retraso suave al anillo exterior
+        function animateCursor() {
+            let distX = mouseX - outlineX;
+            let distY = mouseY - outlineY;
+            
+            outlineX += distX * 0.15; // Velocidad de seguimiento
+            outlineY += distY * 0.15;
+            
+            cursorOutline.style.left = `${outlineX}px`;
+            cursorOutline.style.top = `${outlineY}px`;
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Efecto visual en el cursor al pasar por botones
+        const interactiveElements = document.querySelectorAll('a, button');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.backgroundColor = 'rgba(0, 243, 255, 0.1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            });
+        });
+
+        // ==========================================
+        // 2. LÓGICA DEL AUDIO INTERACTIVO (TONE.JS)
+        // ==========================================
+        // Crear un sintetizador futurista
+        const synth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "sine" },
+            envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.5 }
+        }).toDestination();
+        
+        // Agregar un poco de reverberación de "caverna/montaña"
+        const reverb = new Tone.Reverb({ decay: 4, wet: 0.5 }).toDestination();
+        synth.connect(reverb);
+
+        // Escala Pentatónica Andina (Remite a instrumentos nativos)
+        const andeanScale = ["E4", "G4", "A4", "C5", "D5", "E5", "G5", "A5"];
+
+        // Botón de Inicio: Arranca el motor de audio y muestra el portal
+        document.getElementById('start-btn').addEventListener('click', async () => {
+            await Tone.start(); // Requiere permiso del usuario
+            console.log("Audio Inciado");
+            
+            // Acorde de inicio cinematográfico
+            synth.triggerAttackRelease(["C4", "G4", "C5"], "2n");
+            
+            // Ocultar intro y mostrar portal
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-content');
+            
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.visibility = 'hidden';
+                main.style.visibility = 'visible';
+                main.style.opacity = '1';
+            }, 1000);
+        });
+
+        // Hacer sonar las tarjetas al pasar el mouse
+        const cards = document.querySelectorAll('.holo-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Leer el índice guardado en data-note="x"
+                const noteIndex = parseInt(card.getAttribute('data-note'));
+                const note = andeanScale[noteIndex % andeanScale.length];
+                
+                // Reproducir la nota
+                synth.triggerAttackRelease(note, "8n");
+            });
+        });
+
+        // ==========================================
+        // 3. MOTOR 3D DEL UNIVERSO (THREE.JS)
+        // ==========================================
+        window.onload = function() {
+            const container = document.getElementById('webgl-container');
+            
+            // Configuración básica
+            const scene = new THREE.Scene();
+            // Agregar niebla para desvanecer estrellas lejanas
+            scene.fog = new THREE.FogExp2(0x030305, 0.001); 
+            
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.z = 1000;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Generar Galaxia de Partículas
+            const particleCount = 8000;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            const colorTech = new THREE.Color(0x00f3ff); // Cyan Tech
+            const colorNature = new THREE.Color(0xffa500); // Naranja/Dorado
+
+            for(let i = 0; i < particleCount * 3; i+=3) {
+                // Distribuir estrellas en una gran esfera
+                const r = 1500 * Math.cbrt(Math.random());
+                const theta = Math.random() * 2 * Math.PI;
+                const phi = Math.acos(2 * Math.random() - 1);
+                
+                positions[i] = r * Math.sin(phi) * Math.cos(theta); // x
+                positions[i+1] = r * Math.sin(phi) * Math.sin(theta); // y
+                positions[i+2] = r * Math.cos(phi); // z
+
+                // Mezclar colores: 70% Cyan, 30% Naranja
+                const mixedColor = Math.random() > 0.7 ? colorNature : colorTech;
+                colors[i] = mixedColor.r;
+                colors[i+1] = mixedColor.g;
+                colors[i+2] = mixedColor.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            // Material brillante para las estrellas
+            const material = new THREE.PointsMaterial({
+                size: 3,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+
+            const starSystem = new THREE.Points(geometry, material);
+            scene.add(starSystem);
+
+            // Variables para el movimiento interactivo de cámara
+            let targetX = 0;
+            let targetY = 0;
+            let windowHalfX = window.innerWidth / 2;
+            let windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                targetX = (event.clientX - windowHalfX) * 0.5; // Ajustar sensibilidad
+                targetY = (event.clientY - windowHalfY) * 0.5;
+            });
+
+            // Reajustar 3D si cambia tamaño de pantalla
+            window.addEventListener('resize', () => {
+                windowHalfX = window.innerWidth / 2;
+                windowHalfY = window.innerHeight / 2;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Bucle de animación 3D
+            function animate3D() {
+                requestAnimationFrame(animate3D);
+
+                // Rotación base y lenta del universo
+                starSystem.rotation.y += 0.0005;
+                starSystem.rotation.x += 0.0002;
+
+                // La cámara sigue al mouse con inercia (Lerp)
+                camera.position.x += (targetX - camera.position.x) * 0.02;
+                camera.position.y += (-targetY - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+            
+            animate3D();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo López | Redes, Conectividad y Soporte TI</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --whatsapp: #16a34a;
+            --whatsapp-hover: #15803d;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.88)), url('fondo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            max-width: 420px;
+            width: 100%;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+        .avatar {
+            width: 115px;
+            height: 115px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: top;
+            border: 3px solid var(--accent);
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        h1 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+        .badge {
+            background-color: rgba(37, 99, 235, 0.25);
+            color: #93c5fd;
+            border: 1px solid rgba(147, 197, 253, 0.35);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn {
+            display: block;
+            text-decoration: none;
+            color: var(--text-main);
+            background-color: rgba(51, 65, 85, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background-color: rgba(71, 85, 105, 0.95);
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+        .btn-whatsapp {
+            background-color: var(--whatsapp);
+            border-color: var(--whatsapp);
+        }
+        .btn-whatsapp:hover {
+            background-color: var(--whatsapp-hover);
+        }
+        .footer {
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="foto.jpg" alt="Leonardo Alberto López Martínez" class="avatar">
+        <h1>Leonardo López Martínez</h1>
+        <p class="subtitle">Técnico en Redes, Conectividad y Soporte TI<br>Estudiante de Ing. en TI (UNEMI - En línea)</p>
+        
+        <div class="badges">
+            <span class="badge">Wi-Fi 6 / 6E / 7</span>
+            <span class="badge">Redes LAN 2.5G / 10G</span>
+            <span class="badge">Soporte Nivel 1 y 2</span>
+            <span class="badge">+18 años de exp.</span>
+        </div>
+
+        <div class="links">
+            <a href="CV_Leonardo_Lopez.pdf" download class="btn btn-primary">
+                📄 Descargar Currículum Vitae (PDF)
+            </a>
+            <a href="https://wa.me/593992006391?text=Hola%20Leonardo,%20revis%C3%A9%20tu%20CV%20y%20me%20gustar%C3%ADa%20contactarte." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+                💬 Contactar directo por WhatsApp
+            </a>
+            <a href="https://www.linkedin.com/in/LeonardoLopez85" target="_blank" rel="noopener noreferrer" class="btn">
+                🔗 Ver Perfil en LinkedIn
+            </a>
+            <a href="https://github.com/LeonardoLopez85" target="_blank" rel="noopener noreferrer" class="btn">
+                💻 Ver Portafolio en GitHub
+            </a>
+            <a href="mailto:leo_lalm@hotmail.com" class="btn">
+                ✉️ Enviar Correo Electrónico
+            </a>
+        </div>
+
+        <div class="footer">
+            📍 Milagro, Guayas – Ecuador | 📞 0992006391
+        </div>
+    </div>
+</body>
+</html>

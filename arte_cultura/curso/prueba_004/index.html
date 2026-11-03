@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feria Cultural del Ecuador</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            /* Evita el scroll horizontal en móviles */
+            overflow-x: hidden; 
+        }
+
+        /* Truco para fondos fijos en móviles (evita el lag de background-attachment en iOS/Android) */
+        .fondo-fijo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8)), url('Chimborazo.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        .glass-card {
+            background: rgba(30, 30, 30, 0.5); /* Fondo oscuro semitransparente */
+            backdrop-filter: blur(12px); /* Efecto cristal borroso */
+            -webkit-backdrop-filter: blur(12px); /* Soporte para Safari/iPhone */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            /* Sombra suave inicial */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Al pasar el mouse en PC o tocar en celular */
+        .glass-card:hover, .glass-card:active {
+            transform: translateY(-8px); /* Se levanta un poco */
+            background: rgba(40, 40, 40, 0.7);
+            border: 1px solid rgba(255, 165, 0, 0.5); /* Borde naranja */
+            box-shadow: 0 15px 35px rgba(255, 165, 0, 0.2); /* Resplandor naranja */
+        }
+
+        .icon-gradient {
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-glow {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4 sm:px-8">
+
+    <!-- Capa de fondo -->
+    <div class="fondo-fijo"></div>
+
+    <!-- Encabezado Principal -->
+    <header class="text-center mb-12 w-full max-w-4xl mt-4 sm:mt-10">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 text-glow">
+            Feria Cultural del Ecuador
+        </h1>
+        <p class="text-lg sm:text-xl md:text-2xl font-light text-gray-200 italic text-glow px-2">
+            "Ecuador: diversidad cultural, artística e identidad nacional"
+        </p>
+        <div class="w-24 h-1 mx-auto mt-6 rounded-full bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-80"></div>
+    </header>
+
+    <!-- Grid Adaptativo: 1 col (celular), 2 cols (tablet), 4 cols (PC) -->
+    <main class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-12">
+
+        <!-- Grupo 1 -->
+        <a href="https://www.youtube.com/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-leaf text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 1</h2>
+            <p class="text-lg font-semibold text-white leading-tight">Ecuador: un país megadiverso</p>
+        </a>
+
+        <!-- Grupo 2 -->
+        <a href="https://www.extra.ec/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-masks-theater text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 2</h2>
+            <p class="text-lg font-semibold text-white leading-tight">La identidad cultural del Ecuador</p>
+        </a>
+
+        <!-- Grupo 3 -->
+        <a href="./POO/APE/P1/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-people-group text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 3</h2>
+            <p class="text-lg font-semibold text-white leading-tight">Pueblos y nacionalidades indígenas</p>
+        </a>
+
+        <!-- Grupo 4 -->
+        <a href="./MD/S7-P1/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-comments text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 4</h2>
+            <p class="text-lg font-semibold text-white leading-tight">Lenguas ancestrales del Ecuador</p>
+        </a>
+
+        <!-- Grupo 5 -->
+        <a href="./POO/APE/P1/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-palette text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 5</h2>
+            <p class="text-lg font-semibold text-white leading-tight">Arte de los pueblos originarios</p>
+        </a>
+
+        <!-- Grupo 6 -->
+        <a href="./MD/S7-P1/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-church text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 6</h2>
+            <p class="text-lg font-semibold text-white leading-tight">Arquitectura y patrimonio cultural</p>
+        </a>
+
+        <!-- Grupo 7 -->
+        <a href="./POO/APE/P1/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-book-open text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 7</h2>
+            <p class="text-lg font-semibold text-white leading-tight">Literatura y arte ecuatoriano</p>
+        </a>
+
+        <!-- Grupo 8 -->
+        <a href="https://www.eluniverso.com/" class="glass-card flex flex-col items-center text-center p-8 group">
+            <i class="fa-solid fa-microchip text-4xl mb-4 icon-gradient transition-transform group-hover:scale-110 duration-300"></i>
+            <h2 class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">Grupo 8</h2>
+            <p class="text-lg font-semibold text-white leading-tight">Tecnología al servicio de la cultura</p>
+        </a>
+
+    </main>
+
+</body>
+</html>
